@@ -1,0 +1,49 @@
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        width: 30%;
+        background-color: rgb(174, 217, 238);
+    }
+</style>
+<!-- (A) SEARCH JAVASCRIPT -->
+<script>
+    function doSearch() {
+        // (A1) GET SEARCH TERM
+        var data = new FormData();
+        data.append("search", document.getElementById("search").value);
+
+        // (A2) AJAX - USE HTTP:// NOT FILE://
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "../controller/controller.php");
+        xhr.onload = function() {
+            let results = document.getElementById("results");
+            let output = document.getElementById("output"),
+                search = JSON.parse(this.response);
+            results.innerHTML = "";
+            output.innerHTML = "";
+
+            if (search !== null) {
+                output.innerHTML += `<div> <table><tr> <th>Id</th> <th>Name</th> <th>City</th> </tr> </table> </div>`;
+
+                for (let s of search) {
+
+                    results.innerHTML += `<div><table> <tr><th>${s.id}</th><th>${s.name}</th> <th>${s.city}</th> </tr></table></div>`;
+                }
+            }
+        };
+        xhr.send(data);
+        return false;
+    }
+</script>
+
+<!-- (B) SEARCH FORM -->
+<form onsubmit="return doSearch()">
+    <input type="text" id="search" required/>
+    <input type="submit" value="Search" />
+</form>
+
+<!-- (C) SEARCH RESULTS -->
+<div id=output> </div>
+<div id="results"></div>
